@@ -15,6 +15,8 @@ struct AccessBox_finalApp: App {
         WindowGroup {
             ListView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                .environmentObject(SystemState())
+                .environmentObject(UserData())
         }
     }
 }
