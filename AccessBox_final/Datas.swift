@@ -14,9 +14,9 @@ class UserData: ObservableObject {
             UserDefaults.standard.set(password, forKey: "password")
         }
     }
-    @Published var passIsActive: Bool {
+    @Published var passIsNotActive: Bool {
         didSet {
-            UserDefaults.standard.set(passIsActive, forKey: "passIsActive")
+            UserDefaults.standard.set(passIsNotActive, forKey: "passIsActive")
         }
     }
     @Published var faceIDIsActive: Bool {
@@ -24,16 +24,16 @@ class UserData: ObservableObject {
             UserDefaults.standard.set(faceIDIsActive, forKey: "faceIDIsActive")
         }
     }
-    @Published var isFirstLaunch: Bool {
+    @Published var isNotFirstLaunch: Bool {
         didSet {
-            UserDefaults.standard.set(isFirstLaunch, forKey: "isFirstLaunch")
+            UserDefaults.standard.set(isNotFirstLaunch, forKey: "isFirstLaunch")
         }
     }
     init() {
         self.password = UserDefaults.standard.string(forKey: "password")
-        self.passIsActive = UserDefaults.standard.bool(forKey: "passIsActive")
+        self.passIsNotActive = UserDefaults.standard.bool(forKey: "passIsNotActive")
         self.faceIDIsActive = UserDefaults.standard.bool(forKey: "faceIDIsActive")
-        self.isFirstLaunch = UserDefaults.standard.bool(forKey: "isFirstLaunch")
+        self.isNotFirstLaunch = UserDefaults.standard.bool(forKey: "isNotFirstLaunch")
     }
 }
 

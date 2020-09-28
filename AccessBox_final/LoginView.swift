@@ -17,6 +17,9 @@ struct LoginView: View {
         VStack {
             Text(exeStatus.rawValue)
             KeyView(counter: $counter)
+            if !(userData.isNotFirstLaunch) {
+                Toggle("FaceID", isOn: $userData.faceIDIsActive)
+            }
             Spacer()
             HStack {
                 ButtonView(exeStatus: $exeStatus, counter: $counter, buttonNum: 1)
@@ -118,8 +121,6 @@ struct ButtonView: View {
                     .foregroundColor(.orange)
             })
             .frame(width: size, height: size, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-            TextField("hoge", text: $systemState.pass1)
-            TextField("hoge", text: $systemState.pass2)
         } else {
             Button(action: {
                 if counter > 0 {
