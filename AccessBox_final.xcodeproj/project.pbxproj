@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		06340DE62522114900F6CC1B /* PlusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06340DE52522114900F6CC1B /* PlusView.swift */; };
 		0647B50C2520CA6D0021DB82 /* AccessBox_finalApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0647B50B2520CA6D0021DB82 /* AccessBox_finalApp.swift */; };
 		0647B50E2520CA6D0021DB82 /* ListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0647B50D2520CA6D0021DB82 /* ListView.swift */; };
 		0647B5102520CA6F0021DB82 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0647B50F2520CA6F0021DB82 /* Assets.xcassets */; };
@@ -19,6 +20,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		06340DE52522114900F6CC1B /* PlusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlusView.swift; sourceTree = "<group>"; };
 		0647B5082520CA6D0021DB82 /* AccessBox_final.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AccessBox_final.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0647B50B2520CA6D0021DB82 /* AccessBox_finalApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessBox_finalApp.swift; sourceTree = "<group>"; };
 		0647B50D2520CA6D0021DB82 /* ListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListView.swift; sourceTree = "<group>"; };
@@ -64,6 +66,7 @@
 			children = (
 				0647B50B2520CA6D0021DB82 /* AccessBox_finalApp.swift */,
 				0647B50D2520CA6D0021DB82 /* ListView.swift */,
+				06340DE52522114900F6CC1B /* PlusView.swift */,
 				0647B5292520F6BF0021DB82 /* LaunchScreen.storyboard */,
 				0647B5302520FD550021DB82 /* LoginView.swift */,
 				0647B52D2520F8510021DB82 /* Datas.swift */,
@@ -158,6 +161,7 @@
 				0647B5182520CA6F0021DB82 /* AccessBox_final.xcdatamodeld in Sources */,
 				0647B5152520CA6F0021DB82 /* Persistence.swift in Sources */,
 				0647B52E2520F8510021DB82 /* Datas.swift in Sources */,
+				06340DE62522114900F6CC1B /* PlusView.swift in Sources */,
 				0647B50E2520CA6D0021DB82 /* ListView.swift in Sources */,
 				0647B50C2520CA6D0021DB82 /* AccessBox_finalApp.swift in Sources */,
 			);

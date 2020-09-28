@@ -74,11 +74,18 @@ struct ListView: View {
                         .foregroundColor(.black)
                     #endif
                     Spacer()
-                    Image(systemName: "plus")
-                        .padding()
-                        .foregroundColor(.black)
+                    Button(action: {
+                        systemState.isPlus = true
+                    }, label: {
+                        Image(systemName: "plus")
+                            .padding()
+                            .foregroundColor(.black)
+                    })
                 }
                 .frame(width: UIScreen.main.bounds.width)
+            }
+            if systemState.isPlus {
+                PlusView()
             }
             if userData.isNotFirstLaunch {
                 if !(systemState.isUnlocked) {
@@ -109,32 +116,6 @@ struct ListView: View {
                     authenticate()
                 }
             }
-        }
-    }
-}
-
-struct PlusView: View {
-    @Environment(\.managedObjectContext) private var viewContext
-    @Environment(\.presentationMode) var presentation
-    @State var url = ""
-    @State var tag = ""
-    var body: some View {
-        VStack {
-            TextField("url", text: $url)
-            TextField("tag", text: $tag)
-            Button(action: {
-                let newURL = URLData(context: viewContext)
-                newURL.url = self.url
-                newURL.tag = self.tag
-                newURL.timestamp = Date()
-                do {
-                    try viewContext.save()
-                    self.presentation.wrappedValue.dismiss()
-                } catch {
-                    let nsError = error as NSError
-                    fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-                }
-            }, label: {Text("Create")})
         }
     }
 }
