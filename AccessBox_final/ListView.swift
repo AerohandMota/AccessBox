@@ -60,32 +60,52 @@ struct ListView: View {
 
     var body: some View {
         ZStack {
-            VStack {
+            NavigationView {
                 List {
-                    ForEach(urls) { url in
-                        Text("\((url.tag)!)")
+                    ForEach(urls) { urlobj in
+                        Text("\((urlobj.tag)!)")
+                            .onTapGesture(perform: {
+                                if let path = URL(string: (urlobj.url)!) {
+                                    UIApplication.shared.open(path, options: [.universalLinksOnly: false], completionHandler: {completed in
+                                        print(completed)
+                                    })
+                                }
+                            })
                     }
                     .onDelete(perform: deleteItems)
                 }
-                HStack {
-                    #if os(iOS)
-                    EditButton()
-                        .padding()
-                        .foregroundColor(.black)
-                    #endif
-                    Spacer()
-                    Button(action: {
-                        systemState.isPlus = true
-                    }, label: {
-                        Image(systemName: "plus")
-                            .padding()
-                            .foregroundColor(.black)
-                    })
+                .toolbar {
+                    ToolbarItem(placement: .bottomBar) {
+                        HStack {
+                            #if os(iOS)
+                            EditButton()
+                                .padding()
+                                .foregroundColor(.black)
+                            #endif
+                            Button(action: {
+                                systemState.isSystem = true
+                            }, label: {
+                                Image(systemName: "gear")
+                                    .font(.system(size: 16, weight: .regular))
+                                    .foregroundColor(.orange)
+                            })
+                            Button(action: {
+                                systemState.isPlus = true
+                            }, label: {
+                                Image(systemName: "plus")
+                                    .padding()
+                                    .foregroundColor(.orange)
+                            })
+                        }
+                    }
                 }
-                .frame(width: UIScreen.main.bounds.width)
             }
+            .frame(width: UIScreen.main.bounds.width)
             if systemState.isPlus {
                 PlusView()
+            }
+            if systemState.isSystem {
+                ConfigView()
             }
             if userData.isNotFirstLaunch {
                 if !(systemState.isUnlocked) {
