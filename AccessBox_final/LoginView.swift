@@ -64,7 +64,7 @@ struct ButtonView: View {
     var body: some View {
         if buttonNum < 10 {
             Button(action: {
-                if counter < 3 {
+                if counter <= 3 {
                     counter += 1
                     switch exeStatus {
                     case .auth, .auth_first:
@@ -72,30 +72,31 @@ struct ButtonView: View {
                     case .auth_second:
                         systemState.pass2 += "\(buttonNum)"
                     }
-                } else if counter == 3 {
-                    counter += 1
-                    switch exeStatus {
-                    case .auth:
-                        if systemState.pass1 == userData.password {
-                            systemState.isUnlocked = true
-                        }
-                        initalize()
-                    case .auth_first:
-                        exeStatus = .auth_second
-                        counter = 0
-                    case .auth_second:
-                        if systemState.pass1 == systemState.pass2 {
-                            userData.password = systemState.pass1
-                            if userData.isNotFirstLaunch {
-                                systemState.isSystem = false
-                            } else {
+                    if counter == 4 {
+                        counter += 1
+                        switch exeStatus {
+                        case .auth:
+                            if systemState.pass1 == userData.password {
                                 systemState.isUnlocked = true
-                                userData.isNotFirstLaunch = true
                             }
-                        } else {
-                            exeStatus = .auth_first
+                            initalize()
+                        case .auth_first:
+                            exeStatus = .auth_second
+                            counter = 0
+                        case .auth_second:
+                            if systemState.pass1 == systemState.pass2 {
+                                userData.password = systemState.pass1
+                                if userData.isNotFirstLaunch {
+                                    systemState.isSystem = false
+                                } else {
+                                    systemState.isUnlocked = true
+                                    userData.isNotFirstLaunch = true
+                                }
+                            } else {
+                                exeStatus = .auth_first
+                            }
+                            initalize(2)
                         }
-                        initalize(2)
                     }
                 }
             }, label: {
