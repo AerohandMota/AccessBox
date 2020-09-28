@@ -40,4 +40,6 @@ class UserData: ObservableObject {
 class SystemState: ObservableObject {
     @Published var isUnlocked: Bool = false
     @Published var isSystem: Bool = false
+    @Published var pass1: String = ""
+    @Published var pass2: String = ""
 }
