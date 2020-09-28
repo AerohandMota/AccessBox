@@ -7,9 +7,11 @@
 
 import SwiftUI
 import CoreData
+import LocalAuthentication
 
 struct ListView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.scenePhase) private var scenePhase
     @ObservedObject var userData = UserData()
     @ObservedObject var systemState = SystemState()
     
@@ -17,35 +19,78 @@ struct ListView: View {
         sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
         animation: .default)
     private var items: FetchedResults<Item>
+    
+    private func authenticate() {
+        let context = LAContext()
+        var error: NSError?
+        if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) {
+            userData.faceIDIsActive = true
+            let reason = "Log in to your account"
+            context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason ) { success, error in
+
+                if success {
+
+                    // Move to the main thread because a state update triggers UI changes.
+                    systemState.isUnlocked = true
+
+                } else {
+                    print(error?.localizedDescription ?? "認証に失敗しました")
+
+                    // Fall back to a asking for username and password.
+                    // ...
+                }
+            }
+        }
+    }
 
     var body: some View {
-        ZStack {
-            List {
-                ForEach(items) { item in
-                    Text("Item at \(item.timestamp!, formatter: itemFormatter)")
+        if scenePhase == .active {
+            ZStack {
+                List {
+                    ForEach(items) { item in
+                        Text("Item at \(item.timestamp!, formatter: itemFormatter)")
+                    }
+                    .onDelete(perform: deleteItems)
                 }
-                .onDelete(perform: deleteItems)
-            }
-            .toolbar {
-                #if os(iOS)
-                EditButton()
-                #endif
+                .toolbar {
+                    #if os(iOS)
+                    EditButton()
+                    #endif
 
-                Button(action: addItem) {
-                    Label("Add Item", systemImage: "plus")
+                    Button(action: addItem) {
+                        Label("Add Item", systemImage: "plus")
+                    }
                 }
-            }
-            if userData.isNotFirstLaunch {
-                if !(systemState.isUnlocked) {
-                    LoginView(exeStatus: .auth)
+                if userData.isNotFirstLaunch {
+                    if !(systemState.isUnlocked) {
+                        LoginView(exeStatus: .auth)
+                            .environmentObject(userData)
+                            .environmentObject(systemState)
+                    }
+                } else {
+                    LoginView(exeStatus: .auth_first)
                         .environmentObject(userData)
                         .environmentObject(systemState)
                 }
-            } else {
-                LoginView(exeStatus: .auth_first)
-                    .environmentObject(userData)
-                    .environmentObject(systemState)
             }
+            .onAppear(perform: {
+                if userData.faceIDIsActive {
+                    authenticate()
+                }
+            })
+            .onChange(of: scenePhase) { newScenePhase in
+                if newScenePhase == .background || newScenePhase == .inactive {
+                    systemState.isUnlocked = false
+                } else if newScenePhase == .active && systemState.isUnlocked == false {
+                    if userData.faceIDIsActive {
+                        authenticate()
+                    }
+                }
+            }
+        } else {
+            Image(systemName: "cube.fill")
+                .font(.system(size: 30, weight: .thin))
+                .foregroundColor(.orange)
         }
     }
 

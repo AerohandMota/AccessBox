@@ -17,9 +17,6 @@ struct LoginView: View {
         VStack {
             Text(exeStatus.rawValue)
             KeyView(counter: $counter)
-            if !(userData.isNotFirstLaunch) {
-                Toggle("FaceID", isOn: $userData.faceIDIsActive)
-            }
             Spacer()
             HStack {
                 ButtonView(exeStatus: $exeStatus, counter: $counter, buttonNum: 1)
