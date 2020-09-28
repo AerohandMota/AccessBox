@@ -10,8 +10,8 @@ import SwiftUI
 struct LoginView: View {
     @State var exeStatus: ExeStatus
     @State var counter: Int = 0
-    @ObservedObject var userData = UserData()
-    @ObservedObject var systemState = SystemState()
+    @EnvironmentObject var userData: UserData
+    @EnvironmentObject var systemState: SystemState
 
     var body: some View {
         VStack {
@@ -108,6 +108,12 @@ struct ButtonView: View {
                     case .auth_second:
                         if systemState.pass1 == systemState.pass2 {
                             userData.password = systemState.pass1
+                            if userData.isNotFirstLaunch {
+                                systemState.isSystem = false
+                            } else {
+                                systemState.isUnlocked = true
+                                userData.isNotFirstLaunch = true
+                            }
                         } else {
                             exeStatus = .auth_first
                         }

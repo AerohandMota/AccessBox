@@ -10,26 +10,41 @@ import CoreData
 
 struct ListView: View {
     @Environment(\.managedObjectContext) private var viewContext
-
+    @ObservedObject var userData = UserData()
+    @ObservedObject var systemState = SystemState()
+    
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
         animation: .default)
     private var items: FetchedResults<Item>
 
     var body: some View {
-        List {
-            ForEach(items) { item in
-                Text("Item at \(item.timestamp!, formatter: itemFormatter)")
+        ZStack {
+            List {
+                ForEach(items) { item in
+                    Text("Item at \(item.timestamp!, formatter: itemFormatter)")
+                }
+                .onDelete(perform: deleteItems)
             }
-            .onDelete(perform: deleteItems)
-        }
-        .toolbar {
-            #if os(iOS)
-            EditButton()
-            #endif
+            .toolbar {
+                #if os(iOS)
+                EditButton()
+                #endif
 
-            Button(action: addItem) {
-                Label("Add Item", systemImage: "plus")
+                Button(action: addItem) {
+                    Label("Add Item", systemImage: "plus")
+                }
+            }
+            if userData.isNotFirstLaunch {
+                if !(systemState.isUnlocked) {
+                    LoginView(exeStatus: .auth)
+                        .environmentObject(userData)
+                        .environmentObject(systemState)
+                }
+            } else {
+                LoginView(exeStatus: .auth_first)
+                    .environmentObject(userData)
+                    .environmentObject(systemState)
             }
         }
     }
@@ -75,6 +90,9 @@ private let itemFormatter: DateFormatter = {
 
 struct ListView_Previews: PreviewProvider {
     static var previews: some View {
-        ListView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+        ListView()
+            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+            .environmentObject(UserData())
+            .environmentObject(SystemState())
     }
 }
