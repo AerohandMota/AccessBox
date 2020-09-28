@@ -29,9 +29,7 @@ struct PlusView: View {
                         Button(action: {
                             systemState.isPlus = false
                         }, label: {
-                            Image(systemName: "x.circle")
-                                .font(.system(size: 16, weight: .regular))
-                                .foregroundColor(.orange)
+                            Text("閉じる")
                         })
                     }
                 }
