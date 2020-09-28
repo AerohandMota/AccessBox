@@ -23,9 +23,6 @@ struct LoginView: View {
         ZStack {
             Color.white.edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
             VStack {
-                Text(systemState.pass1)
-                Text(systemState.pass2)
-                Text("\(counter)")
                 Text(exeStatus.rawValue)
                 KeyView(counter: $counter)
                 Spacer()
