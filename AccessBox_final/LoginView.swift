@@ -14,53 +14,57 @@ struct LoginView: View {
     @EnvironmentObject var systemState: SystemState
 
     var body: some View {
-        VStack {
-            Text(exeStatus.rawValue)
-            KeyView(counter: $counter)
-            Spacer()
-            HStack {
-                ButtonView(exeStatus: $exeStatus, counter: $counter, buttonNum: 1)
-                    .environmentObject(userData)
-                    .environmentObject(systemState)
-                ButtonView(exeStatus: $exeStatus, counter: $counter, buttonNum: 2)
-                    .environmentObject(userData)
-                    .environmentObject(systemState)
-                ButtonView(exeStatus: $exeStatus, counter: $counter, buttonNum: 3)
-                    .environmentObject(userData)
-                    .environmentObject(systemState)
+        ZStack {
+            Color.white
+                .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
+            VStack {
+                Text(exeStatus.rawValue)
+                KeyView(counter: $counter)
+                Spacer()
+                HStack {
+                    ButtonView(exeStatus: $exeStatus, counter: $counter, buttonNum: 1)
+                        .environmentObject(userData)
+                        .environmentObject(systemState)
+                    ButtonView(exeStatus: $exeStatus, counter: $counter, buttonNum: 2)
+                        .environmentObject(userData)
+                        .environmentObject(systemState)
+                    ButtonView(exeStatus: $exeStatus, counter: $counter, buttonNum: 3)
+                        .environmentObject(userData)
+                        .environmentObject(systemState)
+                }
+                HStack {
+                    ButtonView(exeStatus: $exeStatus, counter: $counter, buttonNum: 4)
+                        .environmentObject(userData)
+                        .environmentObject(systemState)
+                    ButtonView(exeStatus: $exeStatus, counter: $counter, buttonNum: 5)
+                        .environmentObject(userData)
+                        .environmentObject(systemState)
+                    ButtonView(exeStatus: $exeStatus, counter: $counter, buttonNum: 6)
+                        .environmentObject(userData)
+                        .environmentObject(systemState)
+                }
+                HStack {
+                    ButtonView(exeStatus: $exeStatus, counter: $counter, buttonNum: 7)
+                        .environmentObject(userData)
+                        .environmentObject(systemState)
+                    ButtonView(exeStatus: $exeStatus, counter: $counter, buttonNum: 8)
+                        .environmentObject(userData)
+                        .environmentObject(systemState)
+                    ButtonView(exeStatus: $exeStatus, counter: $counter, buttonNum: 9)
+                        .environmentObject(userData)
+                        .environmentObject(systemState)
+                }
+                HStack {
+                    ButtonView(exeStatus: $exeStatus, counter: $counter, buttonNum: 0)
+                        .environmentObject(userData)
+                        .environmentObject(systemState)
+                    ButtonView(exeStatus: $exeStatus, counter: $counter, buttonNum: 10)
+                        .environmentObject(userData)
+                        .environmentObject(systemState)
+                }
             }
-            HStack {
-                ButtonView(exeStatus: $exeStatus, counter: $counter, buttonNum: 4)
-                    .environmentObject(userData)
-                    .environmentObject(systemState)
-                ButtonView(exeStatus: $exeStatus, counter: $counter, buttonNum: 5)
-                    .environmentObject(userData)
-                    .environmentObject(systemState)
-                ButtonView(exeStatus: $exeStatus, counter: $counter, buttonNum: 6)
-                    .environmentObject(userData)
-                    .environmentObject(systemState)
-            }
-            HStack {
-                ButtonView(exeStatus: $exeStatus, counter: $counter, buttonNum: 7)
-                    .environmentObject(userData)
-                    .environmentObject(systemState)
-                ButtonView(exeStatus: $exeStatus, counter: $counter, buttonNum: 8)
-                    .environmentObject(userData)
-                    .environmentObject(systemState)
-                ButtonView(exeStatus: $exeStatus, counter: $counter, buttonNum: 9)
-                    .environmentObject(userData)
-                    .environmentObject(systemState)
-            }
-            HStack {
-                ButtonView(exeStatus: $exeStatus, counter: $counter, buttonNum: 0)
-                    .environmentObject(userData)
-                    .environmentObject(systemState)
-                ButtonView(exeStatus: $exeStatus, counter: $counter, buttonNum: 10)
-                    .environmentObject(userData)
-                    .environmentObject(systemState)
-            }
+            .padding(.bottom, 100)
         }
-        .padding(.bottom, 100)
     }
 }
 

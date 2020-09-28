@@ -16,9 +16,9 @@ struct ListView: View {
     @ObservedObject var systemState = SystemState()
     
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
+        sortDescriptors: [NSSortDescriptor(keyPath: \URLData.timestamp, ascending: true)],
         animation: .default)
-    private var items: FetchedResults<Item>
+    private var urls: FetchedResults<URLData>
     
     private func authenticate() {
         let context = LAContext()
@@ -43,22 +43,65 @@ struct ListView: View {
         }
     }
 
+    private func addItem() {
+        withAnimation {
+            let newItem = Item(context: viewContext)
+            newItem.timestamp = Date()
+
+            do {
+                try viewContext.save()
+            } catch {
+                // Replace this implementation with code to handle the error appropriately.
+                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+                let nsError = error as NSError
+                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+            }
+        }
+    }
+
+    private func deleteItems(offsets: IndexSet) {
+        withAnimation {
+            offsets.map { urls[$0] }.forEach(viewContext.delete)
+
+            do {
+                try viewContext.save()
+            } catch {
+                // Replace this implementation with code to handle the error appropriately.
+                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+                let nsError = error as NSError
+                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+            }
+        }
+    }
+
     var body: some View {
         if scenePhase == .active {
             ZStack {
-                List {
-                    ForEach(items) { item in
-                        Text("Item at \(item.timestamp!, formatter: itemFormatter)")
-                    }
-                    .onDelete(perform: deleteItems)
-                }
-                .toolbar {
-                    #if os(iOS)
-                    EditButton()
-                    #endif
-
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
+                NavigationView {
+                    List {
+                        ForEach(urls) { url in
+                            Text("\((url.tag)!)")
+                        }
+                        .onDelete(perform: deleteItems)
+                    }.toolbar {
+                        ToolbarItem(placement: .bottomBar) {
+                            HStack {
+                                #if os(iOS)
+                                EditButton()
+                                    .padding()
+                                    .foregroundColor(.black)
+                                #endif
+                                Spacer()
+                                NavigationLink(
+                                    destination: PlusView(),
+                                    label: {
+                                        Image(systemName: "plus")
+                                            .padding()
+                                            .foregroundColor(.black)
+                                    })
+                            }
+                            .frame(width: UIScreen.main.bounds.width)
+                        }
                     }
                 }
                 if userData.isNotFirstLaunch {
@@ -93,45 +136,33 @@ struct ListView: View {
                 .foregroundColor(.orange)
         }
     }
+}
 
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(context: viewContext)
-            newItem.timestamp = Date()
-
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            offsets.map { items[$0] }.forEach(viewContext.delete)
-
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
+struct PlusView: View {
+    @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.presentationMode) var presentation
+    @State var url = ""
+    @State var tag = ""
+    var body: some View {
+        VStack {
+            TextField("url", text: $url)
+            TextField("tag", text: $tag)
+            Button(action: {
+                let newURL = URLData(context: viewContext)
+                newURL.url = self.url
+                newURL.tag = self.tag
+                newURL.timestamp = Date()
+                do {
+                    try viewContext.save()
+                    self.presentation.wrappedValue.dismiss()
+                } catch {
+                    let nsError = error as NSError
+                    fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+                }
+            }, label: {Text("Create")})
         }
     }
 }
-
-private let itemFormatter: DateFormatter = {
-    let formatter = DateFormatter()
-    formatter.dateStyle = .short
-    formatter.timeStyle = .medium
-    return formatter
-}()
 
 struct ListView_Previews: PreviewProvider {
     static var previews: some View {
