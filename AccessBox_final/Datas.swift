@@ -16,7 +16,7 @@ class UserData: ObservableObject {
     }
     @Published var passIsNotActive: Bool {
         didSet {
-            UserDefaults.standard.set(passIsNotActive, forKey: "passIsActive")
+            UserDefaults.standard.set(passIsNotActive, forKey: "passIsNotActive")
         }
     }
     @Published var faceIDIsActive: Bool {
@@ -26,7 +26,7 @@ class UserData: ObservableObject {
     }
     @Published var isNotFirstLaunch: Bool {
         didSet {
-            UserDefaults.standard.set(isNotFirstLaunch, forKey: "isFirstLaunch")
+            UserDefaults.standard.set(isNotFirstLaunch, forKey: "isNotFirstLaunch")
         }
     }
     init() {
