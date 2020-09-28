@@ -12,11 +12,20 @@ struct LoginView: View {
     @State var counter: Int = 0
     @EnvironmentObject var userData: UserData
     @EnvironmentObject var systemState: SystemState
+    
+    func initialize() {
+        systemState.pass1 = ""
+        counter = 0
+        systemState.pass2 = ""
+    }
 
     var body: some View {
         ZStack {
             Color.white.edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
             VStack {
+                Text(systemState.pass1)
+                Text(systemState.pass2)
+                Text("\(counter)")
                 Text(exeStatus.rawValue)
                 KeyView(counter: $counter)
                 Spacer()
@@ -41,6 +50,7 @@ struct LoginView: View {
                 }
             }
             .padding(.bottom, 100)
+            .onAppear(perform: initialize)
         }
     }
 }
@@ -53,7 +63,7 @@ struct ButtonView: View {
     @EnvironmentObject var userData: UserData
     @EnvironmentObject var systemState: SystemState
 
-    func initalize(_ pass: Int = 0) {
+    func initialize(_ pass: Int = 0) {
         systemState.pass1 = ""
         counter = 0
         if pass == 2 {
@@ -79,7 +89,7 @@ struct ButtonView: View {
                             if systemState.pass1 == userData.password {
                                 systemState.isUnlocked = true
                             }
-                            initalize()
+                            initialize()
                         case .auth_first:
                             exeStatus = .auth_second
                             counter = 0
@@ -95,7 +105,7 @@ struct ButtonView: View {
                             } else {
                                 exeStatus = .auth_first
                             }
-                            initalize(2)
+                            initialize(2)
                         }
                     }
                 }

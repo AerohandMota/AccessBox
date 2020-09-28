@@ -131,6 +131,7 @@ struct ListView: View {
         .onChange(of: scenePhase) { newScenePhase in
             if newScenePhase == .background || newScenePhase == .inactive {
                 systemState.isUnlocked = false
+                systemState.isSystem = false
             } else if newScenePhase == .active && systemState.isUnlocked == false {
                 if userData.faceIDIsActive {
                     authenticate()
