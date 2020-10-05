@@ -91,6 +91,7 @@ struct ListView: View {
                             }
                             .onDelete(perform: deleteItems)
                         }
+                        .navigationBarTitle("保存したURL")
                         .toolbar {
                             ToolbarItem(placement: .bottomBar) {
                                 HStack {
