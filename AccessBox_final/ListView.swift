@@ -9,6 +9,15 @@ import SwiftUI
 import CoreData
 import LocalAuthentication
 
+
+extension AnyTransition {
+    static var presentation: AnyTransition {
+        let insertion = AnyTransition.scale
+        let removal = AnyTransition.move(edge: .bottom)
+        return .asymmetric(insertion: insertion, removal: removal)
+    }
+}
+
 struct ListView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.scenePhase) private var scenePhase
@@ -60,59 +69,68 @@ struct ListView: View {
 
     var body: some View {
         ZStack {
-            NavigationView {
-                List {
-                    ForEach(urls) { urlobj in
-                        Text("\((urlobj.tag)!)")
-                            .onTapGesture(perform: {
-                                if let path = URL(string: (urlobj.url)!) {
-                                    UIApplication.shared.open(path, options: [.universalLinksOnly: false], completionHandler: {completed in
-                                        print(completed)
+            if systemState.isUnlocked {
+                if systemState.isPlus {
+                    PlusView()
+                        .transition(.presentation)
+                } else if systemState.isSystem {
+                    ConfigView()
+                        .transition(.presentation)
+                } else {
+                    NavigationView {
+                        List {
+                            ForEach(urls) { urlobj in
+                                Text("\((urlobj.tag)!)")
+                                    .onTapGesture(perform: {
+                                        if let path = URL(string: (urlobj.url)!) {
+                                            UIApplication.shared.open(path, options: [.universalLinksOnly: false], completionHandler: {completed in
+                                                print(completed)
+                                            })
+                                        }
+                                    })
+                            }
+                            .onDelete(perform: deleteItems)
+                        }
+                        .toolbar {
+                            ToolbarItem(placement: .bottomBar) {
+                                HStack {
+                                    #if os(iOS)
+                                    EditButton()
+                                        .padding()
+                                        .foregroundColor(.black)
+                                    #endif
+                                    Button(action: {
+                                        withAnimation {
+                                            systemState.isSystem.toggle()
+                                        }
+                                    }, label: {
+                                        Image(systemName: "gear")
+                                            .font(.system(size: 16, weight: .regular))
+                                            .foregroundColor(.orange)
+                                    })
+                                    Button(action: {
+                                        withAnimation {
+                                            systemState.isPlus.toggle()
+                                        }
+                                    }, label: {
+                                        Image(systemName: "plus")
+                                            .padding()
+                                            .foregroundColor(.orange)
                                     })
                                 }
-                            })
-                    }
-                    .onDelete(perform: deleteItems)
-                }
-                .toolbar {
-                    ToolbarItem(placement: .bottomBar) {
-                        HStack {
-                            #if os(iOS)
-                            EditButton()
-                                .padding()
-                                .foregroundColor(.black)
-                            #endif
-                            Button(action: {
-                                systemState.isSystem = true
-                            }, label: {
-                                Image(systemName: "gear")
-                                    .font(.system(size: 16, weight: .regular))
-                                    .foregroundColor(.orange)
-                            })
-                            Button(action: {
-                                systemState.isPlus = true
-                            }, label: {
-                                Image(systemName: "plus")
-                                    .padding()
-                                    .foregroundColor(.orange)
-                            })
+                            }
                         }
                     }
-                }
-            }
-            .frame(width: UIScreen.main.bounds.width)
-            if systemState.isPlus {
-                PlusView()
-            }
-            if systemState.isSystem {
-                ConfigView()
-            }
-            if userData.isNotFirstLaunch {
-                if !(systemState.isUnlocked) {
-                    LoginView(exeStatus: .auth)
+                    .frame(width: UIScreen.main.bounds.width)
                 }
             } else {
-                LoginView(exeStatus: .auth_first)
+                if userData.isNotFirstLaunch {
+                    LoginView(exeStatus: .auth)
+                        .transition(.presentation)
+                } else {
+                    LoginView(exeStatus: .auth_first)
+                        .transition(.presentation)
+                }
             }
             if scenePhase != .active {
                 ZStack {

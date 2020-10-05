@@ -27,7 +27,9 @@ struct PlusView: View {
                 .toolbar {
                     ToolbarItem(placement: .primaryAction) {
                         Button(action: {
-                            systemState.isPlus = false
+                            withAnimation {
+                                systemState.isPlus = false
+                            }
                         }, label: {
                             Text("閉じる")
                         })

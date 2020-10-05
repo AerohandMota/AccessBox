@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+
 struct LoginView: View {
     @State var exeStatus: ExeStatus
     @State var counter: Int = 0
@@ -84,7 +85,13 @@ struct ButtonView: View {
                         switch exeStatus {
                         case .auth:
                             if systemState.pass1 == userData.password {
-                                systemState.isUnlocked = true
+                                if systemState.isUnlocked && systemState.isSystem {
+                                    exeStatus = .auth_first
+                                } else {
+                                    withAnimation {
+                                        systemState.isUnlocked = true
+                                    }
+                                }
                             }
                             initialize()
                         case .auth_first:
@@ -94,10 +101,14 @@ struct ButtonView: View {
                             if systemState.pass1 == systemState.pass2 {
                                 userData.password = systemState.pass1
                                 if userData.isNotFirstLaunch {
-                                    systemState.isSystem = false
+                                    withAnimation() {
+                                        systemState.isSystem = false
+                                    }
                                 } else {
-                                    systemState.isUnlocked = true
-                                    userData.isNotFirstLaunch = true
+                                    withAnimation() {
+                                        systemState.isUnlocked = true
+                                        userData.isNotFirstLaunch = true
+                                    }
                                 }
                             } else {
                                 exeStatus = .auth_first

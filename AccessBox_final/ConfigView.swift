@@ -27,7 +27,9 @@ struct ConfigView: View {
                 .toolbar {
                     ToolbarItem {
                         Button(action: {
-                            systemState.isSystem = false
+                            withAnimation {
+                                systemState.isSystem = false
+                            }
                         }, label: {
                             Text("閉じる")
                         })
